@@ -10,7 +10,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 
 // import Header from './Header'
 // import Footer from './Footer'
-import layoutStyles from '@/src/styles/LayoutStyles.module.scss'
+import layoutStyles from '@/styles/LayoutStyles.module.scss'
 
 interface LayoutProps {
   title?: string

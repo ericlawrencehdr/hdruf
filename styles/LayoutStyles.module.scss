@@ -1,0 +1,14 @@
+@mixin gradient-background {
+  background: rgb(208,208,208);
+  background: linear-gradient(150deg, rgba(208,208,208,1) 0%, rgba(237,237,237,1) 100%);
+
+}
+
+.LayoutThree {
+  @include gradient-background;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
