@@ -7,6 +7,7 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
+import AuthWrapper from '@/src/comp/layout/AuthWrapper'
 
 // import Header from './Header'
 // import Footer from './Footer'
@@ -67,32 +68,34 @@ const LayoutDefault = ({
         styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }}
       />
       <CssBaseline />
-      <ThemeProvider theme={layoutDefaultTheme}>
-        {/* <Header /> */}
-        <Container
-          component='main'
-          sx={{ p: 0, display: 'flex', flexDirection: 'column' }}
-          disableGutters
-          className={layoutStyles.fullFlex}
-          maxWidth={false}
-        >
-          {title && (
-            <Container
-              sx={{
-                mt: 3,
-                px: {
-                  lg: 0
-                }
-              }}
-            >
-              <Typography variant='h1'>{title}</Typography>
-            </Container>
-          )}
-          {children}
-        </Container>
+      <AuthWrapper>
+        <ThemeProvider theme={layoutDefaultTheme}>
+          {/* <Header /> */}
+          <Container
+            component='main'
+            sx={{ p: 0, display: 'flex', flexDirection: 'column' }}
+            disableGutters
+            className={layoutStyles.fullFlex}
+            maxWidth={false}
+          >
+            {title && (
+              <Container
+                sx={{
+                  mt: 3,
+                  px: {
+                    lg: 0
+                  }
+                }}
+              >
+                <Typography variant='h1'>{title}</Typography>
+              </Container>
+            )}
+            {children}
+          </Container>
 
-        {/* <Footer /> */}
-      </ThemeProvider>
+          {/* <Footer /> */}
+        </ThemeProvider>
+      </AuthWrapper>
     </div>
   )
 }

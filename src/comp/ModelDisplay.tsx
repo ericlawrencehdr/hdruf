@@ -1,37 +1,41 @@
-import { useState, useEffect, useRef, Suspense } from 'react'
+import dynamic from 'next/dynamic'
+import { useState, useEffect, useRef, Suspense, lazy } from 'react'
 import { Canvas, useFrame, ThreeElements } from '@react-three/fiber'
 import { Gltf, CameraControls, Html, useProgress, useGLTF } from '@react-three/drei'
 import Loader3D from '@/src/comp/three/Loader3D'
+
+const Model = dynamic(
+  () => import("@/src/comp/three/Model"),
+  { suspense: true }
+);
+
+// import Model from '@/src/comp/three/Model'
+// const Model = lazy(() => import('@/src/comp/three/Model'));
 
 import styles from '@/styles/ModelDisplay.module.scss'
 
 // const modelFile = '/models/UF.glTF'
 const modelFile = '/models/toyota_4runner_mk4_stock.glb'
 
-function Loader(a, b, c) {
+function Loader() {
   const { active, progress, errors, item, loaded, total } = useProgress()
   console.log('progress', progress);
-  useEffect(() => {
-    console.log('a', typeof a)
-    console.log('b', typeof b)
-    console.log('c', typeof c)
-  }, [a, b, c])
   return <Html center>{loaded} / {progress} % loaded of {total}</Html>
 }
 
-function Thing () {
-  const { nodes } = useGLTF(
-    // 'https://threejs.org/examples/models/gltf/MaterialsVariantsShoe/glTF/MaterialsVariantsShoe.gltf'
-    modelFile
-  )
+// function Thing () {
+//   const { nodes } = useGLTF(
+//     // 'https://threejs.org/examples/models/gltf/MaterialsVariantsShoe/glTF/MaterialsVariantsShoe.gltf'
+//     modelFile
+//   )
 
-  useEffect(() => {
-    console.log('nodes', nodes)
-  }, [nodes])
+//   useEffect(() => {
+//     console.log('nodes', nodes)
+//   }, [nodes])
   
-  return <primitive object={nodes['root']} />
-  return <Html>loaded</Html>
-}
+//   return <primitive object={nodes['root']} />
+//   return <Html>loaded</Html>
+// }
 
 function FPOBox(props: ThreeElements['mesh']) {
   const mesh = useRef<THREE.Mesh>(null!)
@@ -73,8 +77,9 @@ export default function ModelDisplay ({
           <pointLight position={[10, 10, 10]} />
           
           <Suspense fallback={<Loader />}>
+            <Model src={modelFile} />
             {/* <Gltf src={modelFile} receiveShadow castShadow /> */}
-            <Thing />
+            {/* <Thing /> */}
           </Suspense>
           {/* <FPOBox position={[1.2, 0, 0]} /> */}
         </Canvas>
