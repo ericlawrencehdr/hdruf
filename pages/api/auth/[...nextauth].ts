@@ -11,6 +11,27 @@ export const validateCredentials = async ({ password }: any): Promise<Boolean> =
   return includes(passwords, password)
 }
 
+const parseLocalAccounts = (): Account[] => {
+  const localPasswords = process.env.LOCAL_PASSWORDS ?? 'test@example.com:test'
+  const localAccounts = localPasswords.split(',').map((account, index) => {
+    const [username, password] = account.split(':')
+    return { id: `user_${index}`, username: username, password: password }
+  })
+  console.log('local accounts', localAccounts)
+  return localAccounts
+}
+
+// Find a pre-defined user by password
+export const validateAccountCredentials = async ({ password }: any): Promise<Boolean | Account> => {
+  const availableAccounts = parseLocalAccounts()
+  const account = availableAccounts.find((account) => account.password === password)
+  if (account) {
+    console.log('FOund account', account)
+    return account
+  }
+  return false
+}
+
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt'
@@ -54,6 +75,8 @@ export const authOptions: NextAuthOptions = {
         // username: { label: "Username", type: "text", placeholder: "jsmith" },
         password: {  label: "Password", type: "password" }
       },
+      // @TODO: Find out why the line below doesn't match type
+      // @ts-ignore
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
         const user = { id: "1", name: "Guest", email: "guest@hdrinc.com" }
@@ -61,8 +84,19 @@ export const authOptions: NextAuthOptions = {
         console.log('creds', credentials)
         const { password } = credentials as { password: string}
 
-        const credentialsAreValid = await validateCredentials({ password })
+        const matchingAccount = await validateAccountCredentials({ password })
         
+        if (!matchingAccount) {
+          console.log(`no matching account for ${password}`)
+          return null
+        }
+        
+        console.log(`Found matching account for ${password}`, matchingAccount)
+        return matchingAccount
+
+
+        
+        const credentialsAreValid = await validateCredentials({ password })
         if (!credentialsAreValid) {
           console.log('sorry password is not', password)
           return null

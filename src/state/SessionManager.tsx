@@ -5,21 +5,27 @@ import { useUserState } from '@/src/state/userState'
 export default function SessionManager () {
   const userState = useUserState()
   const authChecked = useUserState((state) => state.authChecked)
+  const updateSession = useUserState((state) => state.updateSession)
 
-  const { status } = useSession({
-    required: true,
+  const { status, data: session } = useSession({
+    required: false,
     onUnauthenticated() {
-      console.log('_________ unauthenticated ____________', authChecked)
+      console.log('_________ unauthenticated ____________', authChecked, session)
       // The user is not authenticated, handle it here.
     },
   })
 
   useEffect(() => {
-    console.log(`%cStatus change`, 'border-left: 4px solid red;', status)
-    console.log('authChecked', authChecked)
+    console.log(`%cStatus change`, 'border-left: 14px solid red;', status, session)
+    userState.updateSession(session)
+  }, [status, session])
 
-    userState.checkSession()
-  }, [status])
+  // useEffect(() => {
+  //   console.log(`%cStatus change`, 'border-left: 4px solid red;', status)
+  //   console.log('authChecked', authChecked)
+
+  //   userState.checkSession()
+  // }, [status])
 
   return <></>
 }

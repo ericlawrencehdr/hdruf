@@ -1,7 +1,39 @@
-import { ReactElement, ReactNode, Fragment } from "react"
+import { ReactElement, ReactNode, Fragment, useState, useEffect } from "react"
 import { animated, useSpring } from '@react-spring/web'
+import LoadingFullPage from '@/src/comp/LoadingFullPage'
+import LoginBlock from '@/src/comp/user/LoginBlock'
 
 import { useUserState } from '@/src/state/userState'
+import FPOUserState from "../fpo/FPOUserState"
+
+const fpoStyles = {
+  border: '1px solid red',
+  padding: '1rem',
+  borderRadius: '0.5rem',
+}
+
+const StateLoading= () => {
+  return (
+    <LoadingFullPage />
+  )
+}
+
+const FPOAnon = () => {
+  return (
+    <div style={fpoStyles}>
+      <h3>Anon</h3>
+      <LoginBlock />
+    </div>
+  )
+}
+
+const FPOAuth = () => {
+  return (
+    <div style={fpoStyles}>
+      <h3>Authorized</h3>
+    </div>
+  )
+}
 
 
 interface AuthWrapperProps {
@@ -9,50 +41,50 @@ interface AuthWrapperProps {
 }
 
 export default function AuthWrapper ({ children }: AuthWrapperProps) {
+  const authState = useUserState((state) => state.authState)
+  const isLoggedIn = useUserState((state) => state.isLoggedIn)
+
+  const [showLoading, setShowLoading] = useState(authState === 'loading')
+  const [showAnon, setShowAnon] = useState(false)
+  const [showAuthorized, setShowAuthorized] = useState(false)
+
+  useEffect(() => {
+    setShowLoading(authState === 'loading')
+    setShowAnon(authState === 'unauthenticated')
+    setShowAuthorized(isLoggedIn)
+    console.log('authState', authState)
+  }, [authState])
+
+  useEffect(() => {
+    console.log('showAnon',showAnon)
+  }, [showAnon])
+
   const [springs, api] = useSpring(() => ({
     from: { opacity: 0 },
+    to: { opacity: 1 },
+    duration: 1000,
+    delay: 1000,
   }))
-
-  const fadeIn = () => {
-    api.start({
-      from: {
-        opacity: 0,
-      },
-      to: {
-        opacity: 1,
-      },
-    })
-  }
-
-  const fadeOut = () => {
-    api.start({
-      from: {
-        opacity: 1,
-      },
-      to: {
-        opacity: 0,
-      },
-    })
-  }
-
-  const onClickHandler = (evt: any) => {
-    evt.preventDefault()
-    fadeIn()
-  }
 
   const animationStyles = {
     ...springs
   }
 
-  const authChecked = useUserState((state) => state.authChecked)
-
   return (
     <Fragment>
-      <a href="#" onClick={onClickHandler}>stuff</a>
+      {/* <FPOUserState /> */}
+
+      {showAnon && <Fragment>
+        <animated.div style={animationStyles}>
+          <FPOAnon />
+        </animated.div>
+      </Fragment>}
+
       <animated.div style={animationStyles}>
-        <h3>Checked: {authChecked}</h3>
-        {children}
+        {showAuthorized && <Fragment>{children}</Fragment>}
       </animated.div>
+
+      {showLoading && <StateLoading />}
     </Fragment>
   )
 }
