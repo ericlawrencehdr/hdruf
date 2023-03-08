@@ -51,8 +51,8 @@ export default function AuthWrapper ({ children }: AuthWrapperProps) {
   useEffect(() => {
     setShowLoading(authState === 'loading')
     setShowAnon(authState === 'unauthenticated')
-    setShowAuthorized(isLoggedIn)
-    console.log('authState', authState)
+    setShowAuthorized(authState === 'authenticated')
+    console.log('authState', authState, isLoggedIn)
   }, [authState])
 
   useEffect(() => {
@@ -79,13 +79,14 @@ export default function AuthWrapper ({ children }: AuthWrapperProps) {
           <FPOAnon />
         </animated.div>
       </Fragment>}
-
-      <animated.div style={animationStyles}>
-        {showAuthorized && <Fragment>{children}</Fragment>}
-      </animated.div>
+      
+      {showAuthorized && <Fragment>
+        <animated.div style={animationStyles}>
+          {children}
+        </animated.div>
+      </Fragment>}
 
       {showLoading && <StateLoading />}
     </Fragment>
   )
 }
-
