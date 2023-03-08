@@ -58,7 +58,7 @@ const LayoutDefault = ({
 }: LayoutProps): JSX.Element => {
   const siteTitleDefault = 'U Florida Biomed and Life Sci'
   return (
-    <div className={layoutStyles.TopLevelWrapper}>
+    <div className={['layout layout-default', layoutStyles.TopLevelWrapper].join(' ')}>
       <Head>
         <title>{siteTitleDefault}</title>
         {/* <meta name='description' content={siteDescriptionDefault} /> */}

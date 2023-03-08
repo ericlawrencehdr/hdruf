@@ -7,6 +7,7 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
+import AuthWrapper from '@/src/comp/layout/AuthWrapper'
 
 // import Header from './Header'
 // import Footer from './Footer'
@@ -25,13 +26,15 @@ const LayoutDefault = ({
 }: LayoutProps): JSX.Element => {
   const siteTitleDefault = 'U Florida Biomed and Life Sci'
   return (
-    <div className={layoutStyles.LayoutThree}>
+    <div className={['layout layout-default', layoutStyles.LayoutThree].join(' ')}>
       <Head>
         <title>{siteTitleDefault}</title>
       </Head>
 
       <CssBaseline />
-      {children}
+      <AuthWrapper>
+        {children}
+      </AuthWrapper>
     </div>
   )
 }
