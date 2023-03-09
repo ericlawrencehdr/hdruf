@@ -1,13 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "./auth/[...nextauth]"
-import { listBucket } from '@/src/util/aws'
+import { getModelData } from '@/src/util/aws'
 
 type Data = {
   data?: any,
   error?: string
 }
-
 
 // Load config from AWS
 const mockData = {
@@ -36,10 +35,10 @@ export default async (
   res: NextApiResponse<Data>
 ) => {
   const session = await getServerSession(req, res, authOptions)
-  let buckets = await listBucket()
+  let buckets = await getModelData()
   
   if (req.body.mockData) {
-    return res.status(200).json({ data: mockData })
+    return res.status(200).json({ data: buckets })
   }
 
   if (!session) {
